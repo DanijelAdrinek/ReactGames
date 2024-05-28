@@ -1,0 +1,6 @@
+.tictactoe {
+    --x-color: blue;
+    --o-color: red;
+    --cell-color: gray;
+    --game-color: rgb(234 88 12);
+}
