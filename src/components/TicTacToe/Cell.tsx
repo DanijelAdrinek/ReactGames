@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import XState from './XState';
 import OState from './OState';
 import { POSSIBLE_CELL_STATES } from '@/constants';
@@ -6,19 +8,42 @@ import { POSSIBLE_CELL_STATES } from '@/constants';
 type CellState = typeof POSSIBLE_CELL_STATES[keyof typeof POSSIBLE_CELL_STATES];
 
 type CellProps = {
-    cellState: CellState;
+    initialCellState: CellState;
 }
 
-const CellStateToComponent: Record<CellState, JSX.Element | null> = {
-    [POSSIBLE_CELL_STATES.EMPTY]: null,
-    [POSSIBLE_CELL_STATES.X_STATE]: <XState/>,
-    [POSSIBLE_CELL_STATES.O_STATE]: <OState/> 
+//
+const CellStateToComponent: Record<CellState, (opacity: number) => JSX.Element | null> = {
+    [POSSIBLE_CELL_STATES.EMPTY]: () => null,
+    [POSSIBLE_CELL_STATES.X_STATE]: (opacity: number) => <XState opacity={opacity} />,
+    [POSSIBLE_CELL_STATES.O_STATE]: (opacity: number) => <OState opacity={opacity} />
 }
 
-function Cell({cellState} : CellProps) {
+export function Cell({initialCellState} : CellProps) {
+    const [isTaken, setIsTaken] = useState(false);
+    const [opacity, setOpacity] = useState(1);
+    const [cellState, setCellState] = useState(initialCellState);
+
+    const handleMouseLeave = () => {
+        if (isTaken) {return;}
+
+        setOpacity(1);
+    }
+
+    const handleHover = () => {
+        if (isTaken) {return;}
+
+        setOpacity(0.5);
+    };
+
+
+    const handleClick = () => {
+        setOpacity(1);
+        setIsTaken(true);
+    }
+
     return (
-        <div className='bg-slate-500 relative'>
-            {CellStateToComponent[cellState]}
+        <div onClick={handleClick} onMouseEnter={handleHover} onMouseLeave={handleMouseLeave}  className='bg-slate-500 relative'>
+            {CellStateToComponent[cellState](opacity)}
         </div>
     );
 }

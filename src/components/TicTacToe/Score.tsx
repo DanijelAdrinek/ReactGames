@@ -6,7 +6,7 @@ type ScorePropos = {
     backgroundColor: string;
 }
 
-function Score({score, text, backgroundColor} : ScorePropos) {
+export function Score({score, text, backgroundColor} : ScorePropos) {
     return (
         <article>
             <div>{text}</div>
